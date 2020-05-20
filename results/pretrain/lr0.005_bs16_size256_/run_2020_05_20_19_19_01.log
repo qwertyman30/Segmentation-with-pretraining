@@ -1,0 +1,14 @@
+2020-05-20 19:19:10,602 INFO data_folder = /home/nallapar/workspace/ex1/crops/  
+weights_init = random  
+output_root = results  
+lr = 0.005  
+bs = 16  
+size = 256  
+snapshot_freq = 1  
+exp_suffix =   
+exp_name = lr0.005_bs16_size256_  
+output_folder = results/pretrain/lr0.005_bs16_size256_  
+model_folder = results/pretrain/lr0.005_bs16_size256_/models  
+logs_folder = results/pretrain/lr0.005_bs16_size256_/logs
+2020-05-20 19:19:10,603 INFO train_data 60000
+2020-05-20 19:19:10,603 INFO val_data 1000
