@@ -8,6 +8,8 @@ from data.transforms import get_transforms_pretraining
 from utils import check_dir, accuracy, get_logger
 from models.pretraining_backbone import ResNet18Backbone
 from torch import nn
+import matplotlib.pyplot as plt
+
 global_step = 0
 
 
@@ -84,17 +86,17 @@ def main(args):
             best_model = model
 #             raise NotImplementedError("TODO: save model if a new best validation error was reached")
     _, axes = plt.subplots(1, 2, figsize=(20, 10))
-    axes[0].plot(range(1, 11), losses)
+    axes[0].plot(range(1, 8), losses)
     axes[0].set_xlabel("Epochs")
     axes[0].set_ylabel("Loss")
     axes[0].set_title("Train")
 
-    axes[1].plot(range(1, 11), val_losses)
+    axes[1].plot(range(1, 8), val_losses)
     axes[1].set_xlabel("Epochs")
     axes[1].set_ylabel("Loss")
     axes[1].set_title("Validation losses")
 
-    axes[2].plot(range(1, 11), val_accs)
+    axes[2].plot(range(1, 8), val_accs)
     axes[2].set_xlabel("Epochs")
     axes[2].set_ylabel("Accuracy")
     axes[2].set_title("Validation accuracies")

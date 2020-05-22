@@ -28,8 +28,8 @@ def parse_arguments():
 
 def main(args):
     # model
-    model = ResNet18Backbone(pretrained=False)#.cuda()
-    model.load_state_dict(torch.load('epoch_1.pth', map_location=torch.device('cpu')))
+    model = ResNet18Backbone(pretrained=False).cuda()
+    model.load_state_dict(torch.load('epoch_1.pth', map_location=torch.device('cuda')))
     # raise NotImplementedError("TODO: build model and load weights snapshot")
 
     # dataset
@@ -69,11 +69,13 @@ def find_nn(model, query_img, loader, k, idx):
         closest_dist: the L2 distance of each NN to the features of the query image
     """
     model.eval()
+    query_img = query_img.to('cuda')
     query_img_pred = model(query_img)
     y_preds = []
     for i, x in enumerate(loader):
         if i == idx:
             continue
+        x = x.to('cuda')
         y_preds.append(model(x))
     y_preds = torch.stack(y_preds)
     dist = torch.norm(y_preds - query_img_pred, dim=(1, -1))

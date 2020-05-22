@@ -17,6 +17,10 @@ set_random_seed(0)
 global_step = 0
 
 
+set_random_seed(0)
+global_step = 0
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('data_folder', type=str, help="folder containing the data")
@@ -47,8 +51,9 @@ def main(args):
     img_size = (args.size, args.size)
 
     # model
-    pretrained_model = None
-    raise NotImplementedError("TODO: build model and load pretrained weights")
+    model = ResNet18Backbone(pretrained=False).cuda()
+    model.load_state_dict(torch.load('pretrain_weights_init.pth', map_location=torch.device('cuda'))['model'])
+    #raise NotImplementedError("TODO: build model and load pretrained weights")
     model = Segmentator(2, pretrained_model.features, img_size).cuda()
 
     # dataset
@@ -73,10 +78,10 @@ def main(args):
                                              num_workers=6, pin_memory=True, drop_last=False)
 
     # TODO: loss
-    criterion = None
+    criterion = nn.CrossEntropyLoss().cuda()
     # TODO: SGD optimizer (see pretraining)
-    optimizer = None
-    raise NotImplementedError("TODO: loss function and SGD optimizer")
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
+    #raise NotImplementedError("TODO: loss function and SGD optimizer")
 
     expdata = "  \n".join(["{} = {}".format(k, v) for k, v in vars(args).items()])
     logger.info(expdata)
@@ -87,19 +92,48 @@ def main(args):
     best_val_miou = 0.0
     for epoch in range(100):
         logger.info("Epoch {}".format(epoch))
-        train(train_loader, model, criterion, optimizer, logger)
-        val_results = validate(val_loader, model, criterion, logger, epoch)
-
+        t_loss = train(train_loader, model, criterion, optimizer, logger)
+	print(f"Train Loss: {t_loss}")
+        val_loss, val_iou = validate(val_loader, model, criterion, logger, epoch)
+	print(f"Val Loss: {t_loss} Val iou: {val_iou}")
+        if best_val_miou < val_iou:
+            best_val_miou = val_iou
+            save_model(model, optimizer, args, epoch, val_loss, val_iou, logger)
         # TODO save model
 
 
-
 def train(loader, model, criterion, optimizer, logger):
-    raise NotImplementedError("TODO: training routine")
+    losses = []
+    for X_train, y_train in loader:
+        X_train = X_train.to('cuda', non_blocking=True)
+        y_train = y_train.to('cuda', non_blocking=True)
+        y_pred = model(X_train)
+        loss = criterion(y_pred, y_train)
+        losses.append(loss.item())
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    logger.info(f"Loss: {loss.item()}")
+    print(loss.item())
+    return np.mean(losses)
+    #raise NotImplementedError("TODO: training routine")
 
 
 def validate(loader, model, criterion, logger, epoch=0):
-    raise NotImplementedError("TODO: validation routine")
+    losses, ious = [], []
+    with torch.no_grad():
+        for X_val, y_val in loader:
+            X_val = X_val.to('cuda', non_blocking=True)
+            y_val = y_val.to('cuda', non_blocking=True)
+            y_preds = model(X_val)
+            loss = criterion(y_preds, y_val)
+            _, y_preds = y_preds.max(1)
+            iou = mIoU(y_preds, y_val)
+            losses.append(loss.item())
+            ious.append(iou)
+        print(loss.item(), iou)
+    return np.mean(losses), np.mean(ious)
+    # raise NotImplementedError("TODO: validation routine")
     # return mean_val_loss, mean_val_iou
 
 
