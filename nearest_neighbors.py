@@ -7,7 +7,7 @@ from pprint import pprint
 from torchvision.transforms import *
 from utils import check_dir
 from models.pretraining_backbone import ResNet18Backbone
-from data.pretraining import DataReaderPlainImg
+from data.pretraining import DataReaderPlainImg, custom_collate
 
 
 def parse_arguments():
@@ -33,6 +33,7 @@ def main(args):
     # raise NotImplementedError("TODO: build model and load weights snapshot")
 
     # dataset
+    data_root = "/home/nallapar/workspace/ex1/crops/"
     val_transform = Compose([Resize(args.size), CenterCrop((args.size, args.size)), ToTensor()])
     val_data = DataReaderPlainImg(os.path.join(data_root, str(args.size), "val"), transform=val_transform)
     val_loader = torch.utils.data.DataLoader(val_data, batch_size=1, shuffle=False, num_workers=2,
@@ -47,11 +48,10 @@ def main(args):
         if idx not in query_indices:
             continue
         print("Computing NNs for sample {}".format(idx))
-	# adding idx as argument in order to get a different image
         closest_idx, closest_dist = find_nn(model, img, val_loader, 5, idx)
         _, axes = plt.subplots(1, 2)
-        axes[0].imshow(query_img[0][0].T.numpy())
-        axes[1].imshow(x_val.dataset[closest_idx][0][0].T.numpy())
+        axes[0].imshow(query_img[0].T.numpy())
+        axes[1].imshow(val_loader.dataset[closest_idx][0].T.numpy())
         plt.savefig(f"orig_and_nn_{idx}.jpg")
         #raise NotImplementedError("TODO: retrieve the original NN images, save them and log the results.")
 
@@ -71,10 +71,10 @@ def find_nn(model, query_img, loader, k, idx):
     with torch.no_grad:
         query_img_pred = model(query_img)
         y_preds = []
-        for i, (X_val, y_val) in enumerate(loader):
+        for i, x in enumerate(loader):
             if i == idx:
                 continue
-            y_preds.append(model(X_val))
+            y_preds.append(model(x))
     y_preds = torch.stack(y_preds)
     dist = torch.norm(y_preds - query_img_pred, dim=(1, -1))
     knn = dist.topk(k, largest=False)
