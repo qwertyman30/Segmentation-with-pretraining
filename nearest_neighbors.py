@@ -7,7 +7,7 @@ from pprint import pprint
 from torchvision.transforms import *
 from utils import check_dir
 from models.pretraining_backbone import ResNet18Backbone
-from data.pretraining import DataReaderPlainImg, custom_collate
+from data.pretraining import DataReaderPlainImg
 
 
 def parse_arguments():
@@ -28,16 +28,16 @@ def parse_arguments():
 
 def main(args):
     # model
-    model = ResNet18Backbone(pretrained=False).cuda()
-    model.load_state_dict(torch.load('epoch_1.pth', map_location=torch.device('cuda')))
+    model = ResNet18Backbone(pretrained=False)#.cuda()
+    model.load_state_dict(torch.load('epoch_1.pth', map_location=torch.device('cpu')))
     # raise NotImplementedError("TODO: build model and load weights snapshot")
 
     # dataset
-    data_root = "/home/nallapar/workspace/ex1/crops/"
+    data_root = "/home/mbengt/workspace/dl_lab/crops"
     val_transform = Compose([Resize(args.size), CenterCrop((args.size, args.size)), ToTensor()])
     val_data = DataReaderPlainImg(os.path.join(data_root, str(args.size), "val"), transform=val_transform)
     val_loader = torch.utils.data.DataLoader(val_data, batch_size=1, shuffle=False, num_workers=2,
-                                             pin_memory=True, drop_last=True, collate_fn=custom_collate)
+                                             pin_memory=True, drop_last=True)
     # raise NotImplementedError("Load the validation dataset (crops), use the transform above.")
 
     # choose/sample which images you want to compute the NNs of.
@@ -68,13 +68,13 @@ def find_nn(model, query_img, loader, k, idx):
         closest_idx: the indices of the NNs in the dataset, for retrieving the images
         closest_dist: the L2 distance of each NN to the features of the query image
     """
-    with torch.no_grad:
-        query_img_pred = model(query_img)
-        y_preds = []
-        for i, x in enumerate(loader):
-            if i == idx:
-                continue
-            y_preds.append(model(x))
+    model.eval()
+    query_img_pred = model(query_img)
+    y_preds = []
+    for i, x in enumerate(loader):
+        if i == idx:
+            continue
+        y_preds.append(model(x))
     y_preds = torch.stack(y_preds)
     dist = torch.norm(y_preds - query_img_pred, dim=(1, -1))
     knn = dist.topk(k, largest=False)
