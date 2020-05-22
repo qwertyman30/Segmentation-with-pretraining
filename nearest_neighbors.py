@@ -2,6 +2,7 @@ import os
 import random
 import argparse
 import torch
+import matplotlib.pyplot as plt
 from pprint import pprint
 from torchvision.transforms import *
 from utils import check_dir
@@ -27,25 +28,35 @@ def parse_arguments():
 
 def main(args):
     # model
-    raise NotImplementedError("TODO: build model and load weights snapshot")
+    model = ResNet18Backbone(pretrained=False).cuda()
+    model.load_state_dict(torch.load('epoch_1.pth', map_location=torch.device('cuda')))
+    # raise NotImplementedError("TODO: build model and load weights snapshot")
 
     # dataset
     val_transform = Compose([Resize(args.size), CenterCrop((args.size, args.size)), ToTensor()])
-    raise NotImplementedError("Load the validation dataset (crops), use the transform above.")
+    val_data = DataReaderPlainImg(os.path.join(data_root, str(args.size), "val"), transform=val_transform)
+    val_loader = torch.utils.data.DataLoader(val_data, batch_size=1, shuffle=False, num_workers=2,
+                                             pin_memory=True, drop_last=True, collate_fn=custom_collate)
+    # raise NotImplementedError("Load the validation dataset (crops), use the transform above.")
 
     # choose/sample which images you want to compute the NNs of.
     # You can try different ones and pick the most interesting ones.
-    query_indices = []
+    query_indices = [25, 49, 88, 103]
     nns = []
     for idx, img in enumerate(val_loader):
         if idx not in query_indices:
             continue
         print("Computing NNs for sample {}".format(idx))
-        closest_idx, closest_dist = find_nn(model, img, val_loader, 5)
-        raise NotImplementedError("TODO: retrieve the original NN images, save them and log the results.")
+	# adding idx as argument in order to get a different image
+        closest_idx, closest_dist = find_nn(model, img, val_loader, 5, idx)
+        _, axes = plt.subplots(1, 2)
+        axes[0].imshow(query_img[0][0].T.numpy())
+        axes[1].imshow(x_val.dataset[closest_idx][0][0].T.numpy())
+        plt.savefig(f"orig_and_nn_{idx}.jpg")
+        #raise NotImplementedError("TODO: retrieve the original NN images, save them and log the results.")
 
 
-def find_nn(model, query_img, loader, k):
+def find_nn(model, query_img, loader, k, idx):
     """
     Find the k nearest neighbors (NNs) of a query image, in the feature space of the specified mode.
     Args:
@@ -57,7 +68,18 @@ def find_nn(model, query_img, loader, k):
         closest_idx: the indices of the NNs in the dataset, for retrieving the images
         closest_dist: the L2 distance of each NN to the features of the query image
     """
-    raise NotImplementedError("TODO: nearest neighbors retrieval")
+    with torch.no_grad:
+        query_img_pred = model(query_img)
+        y_preds = []
+        for i, (X_val, y_val) in enumerate(loader):
+            if i == idx:
+                continue
+            y_preds.append(model(X_val))
+    y_preds = torch.stack(y_preds)
+    dist = torch.norm(y_preds - query_img_pred, dim=(1, -1))
+    knn = dist.topk(k, largest=False)
+    return knn.indices[0], knn.values[0]
+    # raise NotImplementedError("TODO: nearest neighbors retrieval")
     # return closest_idx, closest_dist
 
 
