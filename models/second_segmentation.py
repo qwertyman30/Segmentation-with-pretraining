@@ -11,8 +11,8 @@ class Segmentator(nn.Module):
 
     def __init__(self, num_classes, encoder, img_size=(512, 512), shallow_decoder=False):
         super().__init__()
-        self.low_feat = IntermediateLayerGetter(encoder, {"layer1": "layer1"}).cuda()
-        self.encoder = IntermediateLayerGetter(encoder, {"layer4": "out"}).cuda()
+        self.low_feat = IntermediateLayerGetter(encoder, {"layer1": "layer1"})#.cuda()
+        self.encoder = IntermediateLayerGetter(encoder, {"layer4": "out"})#.cuda()
 
         # n_classes, encoder_dim, img_size, low_level_dim, rates
         self.decoder = Decoder(num_classes, 512, img_size, low_level_dim=64, rates=[1, 6, 12, 18])

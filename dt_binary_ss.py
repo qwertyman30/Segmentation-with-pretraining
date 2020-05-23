@@ -7,16 +7,13 @@ import numpy as np
 import argparse
 import torch
 from torch import nn
+import matplotlib.pyplot as plt
 import time
 from utils import check_dir, set_random_seed, accuracy, mIoU, get_logger
 from models.second_segmentation import Segmentator
 from data.transforms import get_transforms_binary_segmentation
 from models.pretraining_backbone import ResNet18Backbone
 from data.segmentation import DataReaderBinarySegmentation
-
-set_random_seed(0)
-global_step = 0
-
 
 set_random_seed(0)
 global_step = 0
@@ -74,11 +71,11 @@ def main(args):
     print("Dataset size: {} samples".format(len(train_data)))
     train_loader = torch.utils.data.DataLoader(train_data, batch_size=args.bs, shuffle=True,
                                                num_workers=6, pin_memory=True, drop_last=True)
-    val_loader = torch.utils.data.DataLoader(val_data, batch_size=1, shuffle=False,
+    val_loader = torch.utils.data.DataLoader(val_data, batch_size=2, shuffle=False,
                                              num_workers=6, pin_memory=True, drop_last=False)
 
     # TODO: loss
-    criterion = nn.CrossEntropyLoss().cuda()
+    criterion = nn.BCELoss().cuda()
     # TODO: SGD optimizer (see pretraining)
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
     #raise NotImplementedError("TODO: loss function and SGD optimizer")
@@ -90,35 +87,60 @@ def main(args):
 
     best_val_loss = np.inf
     best_val_miou = 0.0
-    for epoch in range(100):
+    train_losses, val_losses, val_ious = [], [], []
+    epochs = 100
+    for epoch in range(epochs):
         logger.info("Epoch {}".format(epoch))
         t_loss = train(train_loader, model, criterion, optimizer, logger)
+        train_losses.append(t_loss)
         print(f"Train Loss: {t_loss}")
         val_loss, val_iou = validate(val_loader, model, criterion, logger, epoch)
+        val_losses.append(val_loss)
+        val_ious.append(val_iou)
         print(f"Val Loss: {t_loss} Val iou: {val_iou}")
         if best_val_miou < val_iou:
             best_val_miou = val_iou
             save_model(model, optimizer, args, epoch, val_loss, val_iou, logger)
         # TODO save model
+    _, axes = plt.subplots(1, 3, figsize=(20, 10))
+    axes[0].plot(range(epochs), train_losses)
+    axes[0].set_xlabel('Epoch')
+    axes[0].set_ylabel('Loss')
+    axes[0].set_title('Training loss')
 
+    axes[1].plot(range(epochs), val_losses)
+    axes[1].set_xlabel('Epoch')
+    axes[1].set_ylabel('Loss')
+    axes[1].set_title('Validation loss')
+    
+    axes[2].plot(range(epochs), val_ious)
+    axes[2].set_xlabel('Epoch')
+    axes[2].set_ylabel('IOU')
+    axes[2].set_title('Validation IOU')
+    
+    plt.savefig('Side by side seg.png')
+    
+    plt.plot(range(epochs), train_losses, label="Train")
+    plt.plot(range(epochs), val_losses, label="Validation")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.savefig("Train vs Val seg.png")
 
 def train(loader, model, criterion, optimizer, logger):
     losses = []
     for X_train, y_train in loader:
         X_train = X_train.to('cuda', non_blocking=True)
         y_train = y_train.to('cuda', non_blocking=True)
-        _, y_pred = model(X_train).max(1, True)
-        #_, y_pred = y_pred.max(0)
-        #print(y_pred[0,:,0,0])
-        print('y_pred', y_pred.dtype, y_pred.shape)
-        print('y_train', y_train.dtype, y_train.shape)
+        _, y_pred = y_pred.max(1)
+        y_pred = y_pred/1.
+        y_train = y_train.squeeze(1)
         loss = criterion(y_train, y_pred)
         losses.append(loss.item())
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
     logger.info(f"Loss: {loss.item()}")
-    print(loss.item())
     return np.mean(losses)
     #raise NotImplementedError("TODO: training routine")
 
@@ -130,12 +152,12 @@ def validate(loader, model, criterion, logger, epoch=0):
             X_val = X_val.to('cuda', non_blocking=True)
             y_val = y_val.to('cuda', non_blocking=True)
             y_preds = model(X_val)
-            loss = criterion(y_preds, y_val)
             _, y_preds = y_preds.max(1)
+            y_val = y_val.squeeze(1)
+            loss = criterion(y_preds, y_val)
             iou = mIoU(y_preds, y_val)
             losses.append(loss.item())
             ious.append(iou)
-        print(loss.item(), iou)
     return np.mean(losses), np.mean(ious)
     # raise NotImplementedError("TODO: validation routine")
     # return mean_val_loss, mean_val_iou
@@ -162,6 +184,5 @@ def save_model(model, optimizer, args, epoch, val_loss, val_iou, logger, best=Fa
 if __name__ == '__main__':
     args = parse_arguments()
     #pprint(vars(args))
-    print('1')
     print()
     main(args)
