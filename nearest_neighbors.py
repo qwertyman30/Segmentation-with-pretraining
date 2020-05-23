@@ -1,7 +1,9 @@
+
 import os
 import random
 import argparse
 import torch
+import numpy as np
 import matplotlib.pyplot as plt
 from pprint import pprint
 from torchvision.transforms import *
@@ -33,7 +35,7 @@ def main(args):
     # raise NotImplementedError("TODO: build model and load weights snapshot")
 
     # dataset
-    data_root = "/home/mbengt/workspace/dl_lab/crops"
+    data_root = "/home/nallapar/workspace/ex1/crops"
     val_transform = Compose([Resize(args.size), CenterCrop((args.size, args.size)), ToTensor()])
     val_data = DataReaderPlainImg(os.path.join(data_root, str(args.size), "val"), transform=val_transform)
     val_loader = torch.utils.data.DataLoader(val_data, batch_size=1, shuffle=False, num_workers=2,
@@ -50,7 +52,7 @@ def main(args):
         print("Computing NNs for sample {}".format(idx))
         closest_idx, closest_dist = find_nn(model, img, val_loader, 5, idx)
         _, axes = plt.subplots(1, 2)
-        axes[0].imshow(query_img[0].T.numpy())
+        axes[0].imshow(img[0].T.numpy())
         axes[1].imshow(val_loader.dataset[closest_idx][0].T.numpy())
         plt.savefig(f"orig_and_nn_{idx}.jpg")
         #raise NotImplementedError("TODO: retrieve the original NN images, save them and log the results.")
@@ -68,21 +70,23 @@ def find_nn(model, query_img, loader, k, idx):
         closest_idx: the indices of the NNs in the dataset, for retrieving the images
         closest_dist: the L2 distance of each NN to the features of the query image
     """
-    model.eval()
-    query_img = query_img.to('cuda')
-    query_img_pred = model(query_img)
-    y_preds = []
-    for i, x in enumerate(loader):
-        if i == idx:
-            continue
-        x = x.to('cuda')
-        y_preds.append(model(x))
-    y_preds = torch.stack(y_preds)
-    dist = torch.norm(y_preds - query_img_pred, dim=(1, -1))
-    knn = dist.topk(k, largest=False)
-    return knn.indices[0], knn.values[0]
-    # raise NotImplementedError("TODO: nearest neighbors retrieval")
-    # return closest_idx, closest_dist
+    with torch.no_grad():
+        query_img = query_img.to('cuda')
+        query_img_pred = model(query_img)
+        dists = []
+        for i, x in enumerate(loader):
+            if i == idx:
+                continue
+            x = x.to('cuda')
+            pred = model(x)
+            dist = np.linalg.norm(pred.cpu() - query_img_pred.cpu())
+            dists.append(dist)
+        dists = np.array(dists)
+        inds = dists.argsort()[:k]
+        vals = dists[inds]
+        return inds[0], vals[0]
+        # raise NotImplementedError("TODO: nearest neighbors retrieval")
+        # return closest_idx, closest_dist
 
 
 if __name__ == '__main__':

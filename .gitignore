@@ -1,4 +1,4 @@
-unlabelled_dataset.zip
+#unlabelled_dataset.zip
 crops
 *.png
 *.ipynb
@@ -8,7 +8,7 @@ crops
 __pycache__
 *.pyc
 */*/*/__pycache__/
-
+*.zip
 */*/__pycache__/
-
+seg_data
 */__pycache__/

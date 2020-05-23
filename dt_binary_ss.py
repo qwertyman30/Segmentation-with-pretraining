@@ -6,6 +6,7 @@ sys.path.insert(0,os.getcwd())
 import numpy as np
 import argparse
 import torch
+from torch import nn
 import time
 from utils import check_dir, set_random_seed, accuracy, mIoU, get_logger
 from models.second_segmentation import Segmentator
@@ -20,7 +21,6 @@ global_step = 0
 set_random_seed(0)
 global_step = 0
 
-
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('data_folder', type=str, help="folder containing the data")
@@ -33,7 +33,7 @@ def parse_arguments():
     parser.add_argument('--exp-suffix', type=str, default="", help="string to identify the experiment")
     args = parser.parse_args()
 
-    hparam_keys = ["lr", "bs", "loss"]
+    hparam_keys = ["lr", "bs"]
     args.exp_name = "_".join(["{}{}".format(k, getattr(args, k)) for k in hparam_keys])
 
     args.exp_name += "_{}".format(args.exp_suffix)
@@ -51,8 +51,8 @@ def main(args):
     img_size = (args.size, args.size)
 
     # model
-    model = ResNet18Backbone(pretrained=False).cuda()
-    model.load_state_dict(torch.load('pretrain_weights_init.pth', map_location=torch.device('cuda'))['model'])
+    pretrained_model = ResNet18Backbone(pretrained=False).cuda()
+    pretrained_model.load_state_dict(torch.load(args.weights_init, map_location=torch.device('cuda')))
     #raise NotImplementedError("TODO: build model and load pretrained weights")
     model = Segmentator(2, pretrained_model.features, img_size).cuda()
 
@@ -93,9 +93,9 @@ def main(args):
     for epoch in range(100):
         logger.info("Epoch {}".format(epoch))
         t_loss = train(train_loader, model, criterion, optimizer, logger)
-	print(f"Train Loss: {t_loss}")
+        print(f"Train Loss: {t_loss}")
         val_loss, val_iou = validate(val_loader, model, criterion, logger, epoch)
-	print(f"Val Loss: {t_loss} Val iou: {val_iou}")
+        print(f"Val Loss: {t_loss} Val iou: {val_iou}")
         if best_val_miou < val_iou:
             best_val_miou = val_iou
             save_model(model, optimizer, args, epoch, val_loss, val_iou, logger)
@@ -107,8 +107,12 @@ def train(loader, model, criterion, optimizer, logger):
     for X_train, y_train in loader:
         X_train = X_train.to('cuda', non_blocking=True)
         y_train = y_train.to('cuda', non_blocking=True)
-        y_pred = model(X_train)
-        loss = criterion(y_pred, y_train)
+        _, y_pred = model(X_train).max(1, True)
+        #_, y_pred = y_pred.max(0)
+        #print(y_pred[0,:,0,0])
+        print('y_pred', y_pred.dtype, y_pred.shape)
+        print('y_train', y_train.dtype, y_train.shape)
+        loss = criterion(y_train, y_pred)
         losses.append(loss.item())
         optimizer.zero_grad()
         loss.backward()
@@ -157,6 +161,7 @@ def save_model(model, optimizer, args, epoch, val_loss, val_iou, logger, best=Fa
 
 if __name__ == '__main__':
     args = parse_arguments()
-    pprint(vars(args))
+    #pprint(vars(args))
+    print('1')
     print()
     main(args)

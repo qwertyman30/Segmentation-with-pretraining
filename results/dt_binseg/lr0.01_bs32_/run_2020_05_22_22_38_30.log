@@ -1,0 +1,15 @@
+2020-05-22 22:38:33,694 INFO data_folder = /home/nallapar/workspace/ex1/seg_data/  
+weights_init = /home/nallapar/workspace/ex1/epoch_1.pth  
+output_root = results  
+lr = 0.01  
+bs = 32  
+size = 256  
+snapshot_freq = 1  
+exp_suffix =   
+exp_name = lr0.01_bs32_  
+output_folder = results/dt_binseg/lr0.01_bs32_  
+model_folder = results/dt_binseg/lr0.01_bs32_/models  
+logs_folder = results/dt_binseg/lr0.01_bs32_/logs
+2020-05-22 22:38:33,694 INFO train_data 15177
+2020-05-22 22:38:33,694 INFO val_data 3000
+2020-05-22 22:38:33,695 INFO Epoch 0
