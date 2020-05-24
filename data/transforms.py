@@ -74,9 +74,9 @@ def get_transforms_binary_segmentation(args):
     train_transform_mask = Compose([Resize(size[0], interpolation=Image.NEAREST),
                                     RandomCrop(size, pad_if_needed=True),
                                     RandomHorizontalFlip(),
-                                    ToTensor()])
+                                    ToTensor(), torch.squeeze])
     val_transform = Compose([Resize((size[0], size[0]), interpolation=Image.NEAREST), ToTensor(),
                              Normalize(statistics['mean'], statistics['std'])])
-    val_transform_mask = Compose([Resize((size[0], size[0]), interpolation=Image.NEAREST), ToTensor()])
+    val_transform_mask = Compose([Resize((size[0], size[0]), interpolation=Image.NEAREST), ToTensor(), torch.squeeze])
     return train_transform, val_transform, train_transform_mask, val_transform_mask
 

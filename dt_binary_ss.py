@@ -132,10 +132,8 @@ def train(loader, model, criterion, optimizer, logger):
     for X_train, y_train in loader:
         X_train = X_train.to('cuda', non_blocking=True)
         y_train = y_train.to('cuda', non_blocking=True)
-        _, y_pred = y_pred.max(1)
-        y_pred = y_pred/1.
-        y_train = y_train.squeeze(1)
-        loss = criterion(y_train, y_pred)
+        y_pred = model(X_train)
+        loss = criterion(y_pred, y_train.long())
         losses.append(loss.item())
         optimizer.zero_grad()
         loss.backward()
@@ -151,10 +149,8 @@ def validate(loader, model, criterion, logger, epoch=0):
         for X_val, y_val in loader:
             X_val = X_val.to('cuda', non_blocking=True)
             y_val = y_val.to('cuda', non_blocking=True)
-            y_preds = model(X_val)
-            _, y_preds = y_preds.max(1)
-            y_val = y_val.squeeze(1)
-            loss = criterion(y_preds, y_val)
+            y_preds = model(x_val)
+            loss = criterion(y_val, y_preds.long())
             iou = mIoU(y_preds, y_val)
             losses.append(loss.item())
             ious.append(iou)
