@@ -75,7 +75,7 @@ def main(args):
                                              num_workers=6, pin_memory=True, drop_last=False)
 
     # TODO: loss
-    criterion = nn.BCELoss().cuda()
+    criterion = nn.CrossEntropyLoss().cuda()
     # TODO: SGD optimizer (see pretraining)
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
     #raise NotImplementedError("TODO: loss function and SGD optimizer")
@@ -112,14 +112,14 @@ def main(args):
     axes[1].set_xlabel('Epoch')
     axes[1].set_ylabel('Loss')
     axes[1].set_title('Validation loss')
-    
+
     axes[2].plot(range(epochs), val_ious)
     axes[2].set_xlabel('Epoch')
     axes[2].set_ylabel('IOU')
     axes[2].set_title('Validation IOU')
-    
+
     plt.savefig('Side by side seg.png')
-    
+
     plt.plot(range(epochs), train_losses, label="Train")
     plt.plot(range(epochs), val_losses, label="Validation")
     plt.xlabel("Epochs")
@@ -132,6 +132,7 @@ def train(loader, model, criterion, optimizer, logger):
     for X_train, y_train in loader:
         X_train = X_train.to('cuda', non_blocking=True)
         y_train = y_train.to('cuda', non_blocking=True)
+        y_train[y_train > 0] = 1
         y_pred = model(X_train)
         loss = criterion(y_pred, y_train.long())
         losses.append(loss.item())
@@ -149,11 +150,12 @@ def validate(loader, model, criterion, logger, epoch=0):
         for X_val, y_val in loader:
             X_val = X_val.to('cuda', non_blocking=True)
             y_val = y_val.to('cuda', non_blocking=True)
-            y_preds = model(x_val)
-            loss = criterion(y_val, y_preds.long())
+            y_val[y_val > 0] = 1
+            y_preds = model(X_val)
+            loss = criterion(y_preds, y_val.long())
             iou = mIoU(y_preds, y_val)
             losses.append(loss.item())
-            ious.append(iou)
+            ious.append(iou.item())
     return np.mean(losses), np.mean(ious)
     # raise NotImplementedError("TODO: validation routine")
     # return mean_val_loss, mean_val_iou

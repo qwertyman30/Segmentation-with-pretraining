@@ -1,6 +1,5 @@
-#unlabelled_dataset.zip
+unlabelled_dataset.zip
 crops
-*.png
 *.ipynb
 .ipynb_checkpoints
 *.cpython-37.pyc
@@ -13,3 +12,4 @@ __pycache__
 seg_data
 */__pycache__/
 *.jpg
+nohup.out
