@@ -79,4 +79,3 @@ def get_transforms_binary_segmentation(args):
                              Normalize(statistics['mean'], statistics['std'])])
     val_transform_mask = Compose([Resize((size[0], size[0]), interpolation=Image.NEAREST), ToTensor(), torch.squeeze])
     return train_transform, val_transform, train_transform_mask, val_transform_mask
-

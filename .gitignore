@@ -12,3 +12,4 @@ __pycache__
 seg_data
 */__pycache__/
 *.jpg
+*.png
