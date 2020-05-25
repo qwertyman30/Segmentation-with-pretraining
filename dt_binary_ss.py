@@ -102,7 +102,7 @@ def main(args):
             best_val_miou = val_iou
             save_model(model, optimizer, args, epoch, val_loss, val_iou, logger)
         # TODO save model
-    '''
+
     _, axes = plt.subplots(1, 3, figsize=(20, 10))
     axes[0].plot(range(epochs), train_losses)
     axes[0].set_xlabel('Epoch')
@@ -119,7 +119,7 @@ def main(args):
     axes[2].set_ylabel('IOU')
     axes[2].set_title('Validation IOU')
 
-    plt.savefig('Side by side seg.png')'''
+    plt.savefig('Side by side seg.png')
 
     plt.plot(range(epochs), train_losses, label="Train")
     plt.plot(range(epochs), val_losses, label="Validation")
