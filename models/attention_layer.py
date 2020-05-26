@@ -49,11 +49,17 @@ class AdditiveAttention(nn.Module):
 class DotProdAttention(nn.Module):
     def __init__(self, encoder_dim):
         super(DotProdAttention, self).__init__()
-        raise NotImplementedError("TODO: Implement attention layer")
+        self.encoder_dim = encoder_dim
+        self.softmax = nn.Softmax(1)
+        #raise NotImplementedError("TODO: Implement attention layer")
 
     def forward(self, encoder_output, hidden_state):
         # Verify sizes
-        return context, alpha
+        e = torch.matmul(encoder_output, hidden_state.unsqueeze(2))
+        alpha = self.softmax(e)
+        context = encoder_output * alpha / self.encoder_dim
+        return context, alpha.squeeze()
+
 
 if __name__ == "__main__":
     model = Attention(512, 'additive').cuda()
