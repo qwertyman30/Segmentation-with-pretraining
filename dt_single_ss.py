@@ -51,7 +51,7 @@ def main(args):
     pretrained_model = ResNet18Backbone(False)
     # TODO: Complete the documentation for AttSegmentator model
     raise NotImplementedError("TODO: Build model AttSegmentator model")
-    model = None
+    model = AttSegmentator(5, pretrained_model, att_type='additive')
 
     if os.path.isfile(args.pretrained_model_path):
         model = load_from_weights(model, args.pretrained_model_path, logger)
@@ -85,10 +85,10 @@ def main(args):
 
 
     # TODO: loss
-    criterion = None
+    criterion = nn.CrossEntropyLoss().cuda()
     # TODO: SGD optimizer (see pretraining)
-    optimizer = None
-    raise NotImplementedError("TODO: loss function and SGD optimizer")
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
+    #raise NotImplementedError("TODO: loss function and SGD optimizer")
 
     expdata = "  \n".join(["{} = {}".format(k, v) for k, v in vars(args).items()])
     logger.info(expdata)
@@ -97,13 +97,65 @@ def main(args):
 
     best_val_loss = np.inf
     best_val_miou = 0.0
-    for epoch in range(100):
+    train_losses, train_ious, val_losses, val_ious = [], [], [], []
+    epochs = 100
+    for epoch in range(epochs):
         logger.info("Epoch {}".format(epoch))
-        train(train_loader, model, criterion, optimizer, log, logger)
+        t_loss, t_iou = train(train_loader, model, criterion, optimizer, log, logger)
         val_loss, val_iou = validate(val_loader, model, criterion, log, logger, epoch)
+        
+        train_losses.append(t_loss)
+        train_ious.append(t_iou)
+        val_losses.append(val_loss)
+        val_ious.append(val_iou)
+        
+        if best_val_miou < val_iou:
+            best_val_miou = val_iou
+            torch.save(model.state_dict(), f'epoch_{epoch}_single_ss.pth')
 
         # TODO save model
-        raise NotImplementedError("TODO: implement the code for saving the model")
+        #raise NotImplementedError("TODO: implement the code for saving the model")
+        
+        _, axes = plt.subplots(1, 4, figsize=(25, 10))
+    axes[0].plot(range(epochs), train_losses)
+    axes[0].set_xlabel('Epoch')
+    axes[0].set_ylabel('Loss')
+    axes[0].set_title('Training loss')
+
+    axes[1].plot(range(epochs), train_ious)
+    axes[1].set_xlabel('Epoch')
+    axes[1].set_ylabel('IOU')
+    axes[1].set_title('Training IOU')
+
+    axes[2].plot(range(epochs), val_losses)
+    axes[2].set_xlabel('Epoch')
+    axes[2].set_ylabel('Loss')
+    axes[2].set_title('Validation loss')
+
+    axes[3].plot(range(epochs), val_ious)
+    axes[3].set_xlabel('Epoch')
+    axes[3].set_ylabel('IOU')
+    axes[3].set_title('Validation IOU')
+    
+    plt.savefig('Side by side single seg attention.png')
+    plt.close()
+
+    plt.plot(range(epochs), train_losses, label="Train")
+    plt.plot(range(epochs), val_losses, label="Validation")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.savefig("Train vs Val losses single seg attention.png")
+    plt.close()
+    
+    plt.plot(range(epochs), train_ious, label="Train")
+    plt.plot(range(epochs), val_ious, label="Validation")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.savefig("Train vs Val ious single seg attention.png")
+    plt.close()
+
 
 def train(loader, model, criterion, optimizer, log, logger):
     logger.info("Training")
@@ -144,6 +196,7 @@ def train(loader, model, criterion, optimizer, log, logger):
         batch_time = time.time()
     time_txt = "batch time: {:.2f} total time: {:.2f}".format(time_meter.mean, time.time()-start_time)
     logger.info(time_txt)
+    return loss_meter.mean, iou_meter.mean()
 
 def validate(loader, model, criterion, log, logger, epoch=0):
     logger.info("Validating Epoch {}".format(epoch))
