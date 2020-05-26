@@ -78,12 +78,12 @@ def main(args):
         val_loss, val_acc = validate(val_loader, model, criterion)
         val_losses.append(val_loss)
         val_accs.append(val_acc)
-        torch.save(model.state_dict(), f'epoch_{epoch}.pth')
 
         # save model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             best_model = model
+            torch.save(model.state_dict(), f'epoch_{epoch}.pth')
 #             raise NotImplementedError("TODO: save model if a new best validation error was reached")
     _, axes = plt.subplots(1, 2, figsize=(20, 10))
     axes[0].plot(range(1, 8), losses)

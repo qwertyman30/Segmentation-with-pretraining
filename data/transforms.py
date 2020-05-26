@@ -79,3 +79,23 @@ def get_transforms_binary_segmentation(args):
                              Normalize(statistics['mean'], statistics['std'])])
     val_transform_mask = Compose([Resize((size[0], size[0]), interpolation=Image.NEAREST), ToTensor(), torch.squeeze])
     return train_transform, val_transform, train_transform_mask, val_transform_mask
+
+def get_transforms_binary_segmentation_attention(args):
+    """ Returns the transformations for the binary segmentation task. """
+    from PIL import Image
+    size = [args.size]*2
+    train_transform = Compose([
+        Resize(args.size),
+        RandomCrop([args.size]*2, pad_if_needed=True),
+        RandomHorizontalFlip(),
+        RandomApply([ColorJitter(0.2, 0.2, 0.2, 0.1)], p=0.8),
+        ToTensor(),
+        Normalize(statistics['mean'], statistics['std'])])
+    train_transform_mask = Compose([Resize(size[0], interpolation=Image.NEAREST),
+                                    RandomCrop(size, pad_if_needed=True),
+                                    RandomHorizontalFlip(),
+                                    ToTensor(), torch.squeeze])
+    val_transform = Compose([Resize((size[0], size[0]), interpolation=Image.NEAREST), ToTensor(),
+                             Normalize(statistics['mean'], statistics['std'])])
+    val_transform_mask = Compose([Resize((size[0], size[0]), interpolation=Image.NEAREST), ToTensor()])
+    return train_transform, val_transform, train_transform_mask, val_transform_mask

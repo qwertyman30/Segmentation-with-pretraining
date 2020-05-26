@@ -10,7 +10,7 @@ from utils.weights import load_from_weights
 from utils import check_dir, set_random_seed, accuracy, mIoU, get_logger, save_in_log
 from models.att_segmentation import AttSegmentator
 from torch.utils.tensorboard import SummaryWriter
-from data.transforms import get_transforms_binary_segmentation
+from data.transforms import get_transforms_binary_segmentation_attention
 from models.pretraining_backbone import ResNet18Backbone
 from data.segmentation import DataReaderSingleClassSemanticSegmentationVector, DataReaderSemanticSegmentationVector
 
@@ -48,10 +48,10 @@ def main(args):
     img_size = (args.size, args.size)
 
     # model
-    pretrained_model = ResNet18Backbone(False)
+    pretrained_model = ResNet18Backbone(False).cuda()
     # TODO: Complete the documentation for AttSegmentator model
-    raise NotImplementedError("TODO: Build model AttSegmentator model")
-    model = AttSegmentator(5, pretrained_model, att_type='additive')
+    #raise NotImplementedError("TODO: Build model AttSegmentator model")
+    model = AttSegmentator(5, pretrained_model, att_type='additive').cuda()
 
     if os.path.isfile(args.pretrained_model_path):
         model = load_from_weights(model, args.pretrained_model_path, logger)
@@ -173,8 +173,10 @@ def train(loader, model, criterion, optimizer, log, logger):
         v_class = v_class.float().cuda().squeeze()
         logits, alphas = model(img, v_class, out_att=True)
         logits = logits.squeeze()
-        labels = (torch.nn.functional.interpolate(label.cuda(), size=logits.shape[-2:]).squeeze(1)*256).long()
-        loss = criterion(logits, labels)
+        label = label.cuda()
+        label[label>0] = 1
+        #labels = (torch.nn.functional.interpolate(label.cuda(), size=logits.shape[-2:]).squeeze(1)*256).long()
+        loss = criterion(logits, label.long())
         iou = mIoU(logits, labels)
 
         # backward
@@ -210,9 +212,11 @@ def validate(loader, model, criterion, log, logger, epoch=0):
         img = img.squeeze(0).cuda()
         v_class = v_class.float().cuda().squeeze()
         logits, alphas = model(img, v_class, out_att=True)
-        label = label.squeeze(0).unsqueeze(1)
-        labels = (torch.nn.functional.interpolate(label.cuda(), size=logits.shape[-2:]).squeeze(1)*256).long()
-        loss = criterion(logits, labels)
+        logits = logits.squeeze()
+        label = label.squeeze(0).cuda()
+        label[label>0] = 1
+        #labels = (torch.nn.functional.interpolate(label.cuda(), size=logits.shape[-2:]).squeeze(1)*256).long()
+        loss = criterion(logits, label.long())
         iou = mIoU(logits, labels)
 
         loss_meter.add(loss.item())
