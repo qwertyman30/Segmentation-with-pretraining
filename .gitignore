@@ -13,3 +13,4 @@ seg_data
 */__pycache__/
 *.jpg
 *.out
+*.png
