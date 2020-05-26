@@ -35,7 +35,7 @@ def parse_arguments():
 
     args.exp_name += "_{}".format(args.exp_suffix)
 
-    args.output_folder = check_dir(os.path.join(args.output_root, 'dt_binseg', args.exp_name))
+    args.output_folder = check_dir(os.path.join(args.output_root, 'dt_multseg', args.exp_name))
     args.model_folder = check_dir(os.path.join(args.output_folder, "models"))
     args.logs_folder = check_dir(os.path.join(args.output_folder, "logs"))
 
@@ -49,7 +49,7 @@ def main(args):
 
     # model
     pretrained_model = ResNet18Backbone(pretrained=False).cuda()
-    pretrained_model.load_state_dict(torch.load(args.weights_init, map_location=torch.device('cuda')))
+    pretrained_model.load_state_dict(torch.load(args.weights_init, map_location=torch.device('cuda'))['model'], strict=False)
     #raise NotImplementedError("TODO: build model and load pretrained weights")
     model = Segmentator(5, pretrained_model.features, img_size).cuda()
 

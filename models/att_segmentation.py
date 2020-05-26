@@ -14,8 +14,8 @@ class AttSegmentator(nn.Module):
 
     def __init__(self, num_classes, encoder, att_type='additive', img_size=(512, 512)):
         super().__init__()
-        self.low_feat = IntermediateLayerGetter(encoder, {"layer1": "layer1"})#.cuda()
-        self.encoder = IntermediateLayerGetter(encoder, {"layer4": "out"})#.cuda()
+        self.low_feat = IntermediateLayerGetter(encoder, {"layer1": "layer1"}).cuda()
+        self.encoder = IntermediateLayerGetter(encoder, {"layer4": "out"}).cuda()
         # For resnet18
         encoder_dim = 512
         low_level_dim = 64
@@ -33,22 +33,22 @@ class AttSegmentator(nn.Module):
         with torch.no_grad():
             low_level_feat = self.low_feat(x)['layer1']
             enc_feat = self.encoder(x)['out']
-        
+
         query = self.class_encoder(v_class)
         shape = enc_feat.shape
-        
+
         enc_feat = enc_feat.permute(0, 2, 3, 1).contiguous().view(shape[0], -1, shape[1])
-        
+
         x_enc, attention = self.attention_enc(enc_feat, query)
         x_enc = x_enc.view(shape)
-        
+
         segmentation = self.decoder(x_enc, low_level_feat)
 
         if out_att:
             return segmentation, attention
         return segmentation
-    
-    
+
+
 if __name__ == "__main__":
     from torchvision.models.resnet import resnet18
     pretrained_model = resnet18(num_classes=4).cuda()

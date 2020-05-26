@@ -1,0 +1,15 @@
+2020-05-25 20:03:11,239 INFO data_folder = /home/nallapar/workspace/ex1/seg_data/  
+weights_init = /home/nallapar/workspace/ex1/bin seg best model.pth  
+output_root = results  
+lr = 0.001  
+bs = 32  
+size = 256  
+snapshot_freq = 1  
+exp_suffix =   
+exp_name = lr0.001_bs32_  
+output_folder = results/dt_binseg/lr0.001_bs32_  
+model_folder = results/dt_binseg/lr0.001_bs32_/models  
+logs_folder = results/dt_binseg/lr0.001_bs32_/logs
+2020-05-25 20:03:11,243 INFO train_data 15177
+2020-05-25 20:03:11,243 INFO val_data 3000
+2020-05-25 20:03:11,243 INFO Epoch 0

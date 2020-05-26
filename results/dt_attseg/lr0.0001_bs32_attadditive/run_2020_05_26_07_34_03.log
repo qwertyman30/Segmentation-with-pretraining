@@ -1,0 +1,28 @@
+2020-05-26 07:34:04,766 INFO Loading weights from /home/nallapar/workspace/ex1/ckpt_epoch91_loss0.366_miou0.215.pth
+2020-05-26 07:34:04,796 INFO Weights ignored from loaded model: decoder.last_conv.6.weight  decoder.last_conv.6.bias
+2020-05-26 07:34:04,797 INFO Weights ignored from training model: class_encoder.weight  class_encoder.bias  attention_enc.attention_layer.U.weight  attention_enc.attention_layer.U.bias  attention_enc.attention_layer.W.weight  attention_enc.attention_layer.W.bias  attention_enc.attention_layer.v.weight  attention_enc.attention_layer.v.bias  decoder.last_conv.6.weight  decoder.last_conv.6.bias
+2020-05-26 07:34:04,816 INFO Done loading pretrained weights
+2020-05-26 07:34:05,904 INFO data_folder = /home/nallapar/workspace/ex1/seg_data/  
+pretrained_model_path = /home/nallapar/workspace/ex1/ckpt_epoch91_loss0.366_miou0.215.pth  
+output_root = results  
+lr = 0.0001  
+bs = 32  
+att = additive  
+size = 256  
+snapshot_freq = 5  
+exp_suffix =   
+exp_name = lr0.0001_bs32_attadditive  
+output_folder = results/dt_attseg/lr0.0001_bs32_attadditive  
+model_folder = results/dt_attseg/lr0.0001_bs32_attadditive/models  
+logs_folder = results/dt_attseg/lr0.0001_bs32_attadditive/logs
+2020-05-26 07:34:05,904 INFO train_data 15177
+2020-05-26 07:34:05,904 INFO val_data 3000
+2020-05-26 07:34:05,904 INFO Epoch 0
+2020-05-26 07:34:05,904 INFO Training
+2020-05-26 07:38:12,401 INFO batch time: 0.52 total time: 246.50
+2020-05-26 07:38:12,408 INFO Validating Epoch 0
+2020-05-26 07:40:04,686 INFO Epoch 0 Avg loss = 0.1581 mIoU = 0.0000 Time 112.28
+2020-05-26 07:40:05,572 INFO Epoch 1
+2020-05-26 07:40:05,572 INFO Training
+2020-05-26 07:44:13,343 INFO batch time: 0.52 total time: 247.77
+2020-05-26 07:44:13,344 INFO Validating Epoch 1
