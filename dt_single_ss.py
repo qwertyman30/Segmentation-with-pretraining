@@ -173,12 +173,12 @@ def train(loader, model, criterion, optimizer, logger):
     batch_time = time.time()
     for idx, (img, v_class, label) in enumerate(loader):
         img = img.cuda()
-        v_class = v_class.float().cuda()squeeze()
+        v_class = v_class.float().cuda().squeeze()
         logits, alphas = model(img, v_class, out_att=True)
         logits = logits.squeeze()
         labels = (torch.nn.functional.interpolate(label.cuda(), size=logits.shape[-2:]).squeeze(1)*256).long()
         loss = criterion(logits, labels)
-        iou = mIoU(logits, label)
+        iou = mIoU(logits, labels)
 
         # backward
         optimizer.zero_grad()
@@ -216,7 +216,7 @@ def validate(loader, model, criterion, logger, epoch=0):
         label = label.squeeze(0).unsqueeze(1)
         labels = (torch.nn.functional.interpolate(label.cuda(), size=logits.shape[-2:]).squeeze(1)*256).long()
         loss = criterion(logits, labels)
-        iou = mIoU(logits, label)
+        iou = mIoU(logits, labels)
 
         loss_meter.add(loss.item())
         iou_meter.add(iou)
