@@ -1,0 +1,206 @@
+2020-05-26 19:50:34,401 INFO Loading weights from /home/nallapar/workspace/ex1/bin_seg_best_model.pth
+2020-05-26 19:50:34,436 INFO Weights ignored from loaded model: decoder.last_conv.6.weight  decoder.last_conv.6.bias
+2020-05-26 19:50:34,436 INFO Weights ignored from training model: class_encoder.weight  class_encoder.bias  attention_enc.attention_layer.U.weight  attention_enc.attention_layer.U.bias  attention_enc.attention_layer.W.weight  attention_enc.attention_layer.W.bias  attention_enc.attention_layer.v.weight  attention_enc.attention_layer.v.bias  decoder.last_conv.6.weight  decoder.last_conv.6.bias
+2020-05-26 19:50:34,456 INFO Done loading pretrained weights
+2020-05-26 19:50:35,768 INFO data_folder = /home/nallapar/workspace/ex1/seg_data/  
+pretrained_model_path = /home/nallapar/workspace/ex1/bin_seg_best_model.pth  
+output_root = results  
+lr = 0.0001  
+bs = 32  
+att = additive  
+size = 256  
+snapshot_freq = 5  
+exp_suffix =   
+exp_name = lr0.0001_bs32_attadditive  
+output_folder = results/dt_attseg/lr0.0001_bs32_attadditive  
+model_folder = results/dt_attseg/lr0.0001_bs32_attadditive/models  
+logs_folder = results/dt_attseg/lr0.0001_bs32_attadditive/logs
+2020-05-26 19:50:35,769 INFO train_data 15177
+2020-05-26 19:50:35,769 INFO val_data 3000
+2020-05-26 19:50:35,769 INFO Epoch 0
+2020-05-26 19:50:35,769 INFO Training
+2020-05-26 19:54:57,637 INFO batch time: 0.55 total time: 261.87
+2020-05-26 19:54:57,638 INFO Validating Epoch 0
+2020-05-26 19:57:47,691 INFO Epoch 0 Avg loss = 0.1692 mIoU = 0.0000 Time 170.05
+2020-05-26 19:57:48,607 INFO Epoch 1
+2020-05-26 19:57:48,607 INFO Training
+2020-05-26 20:02:25,541 INFO batch time: 0.58 total time: 276.93
+2020-05-26 20:02:25,542 INFO Validating Epoch 1
+2020-05-26 20:05:16,268 INFO Epoch 1 Avg loss = 0.1678 mIoU = 0.0001 Time 170.73
+2020-05-26 20:05:17,134 INFO Epoch 2
+2020-05-26 20:05:17,135 INFO Training
+2020-05-26 20:09:54,079 INFO batch time: 0.58 total time: 276.94
+2020-05-26 20:09:54,080 INFO Validating Epoch 2
+2020-05-26 20:12:44,250 INFO Epoch 2 Avg loss = 0.1595 mIoU = 0.0000 Time 170.17
+2020-05-26 20:12:44,251 INFO Epoch 3
+2020-05-26 20:12:44,251 INFO Training
+2020-05-26 20:17:21,962 INFO batch time: 0.59 total time: 277.71
+2020-05-26 20:17:21,963 INFO Validating Epoch 3
+2020-05-26 20:20:12,215 INFO Epoch 3 Avg loss = 0.1578 mIoU = 0.0000 Time 170.25
+2020-05-26 20:20:12,216 INFO Epoch 4
+2020-05-26 20:20:12,216 INFO Training
+2020-05-26 20:24:50,089 INFO batch time: 0.59 total time: 277.87
+2020-05-26 20:24:50,090 INFO Validating Epoch 4
+2020-05-26 20:27:40,195 INFO Epoch 4 Avg loss = 0.1584 mIoU = 0.0001 Time 170.10
+2020-05-26 20:27:41,009 INFO Epoch 5
+2020-05-26 20:27:41,009 INFO Training
+2020-05-26 20:32:18,274 INFO batch time: 0.58 total time: 277.26
+2020-05-26 20:32:18,275 INFO Validating Epoch 5
+2020-05-26 20:35:08,312 INFO Epoch 5 Avg loss = 0.1586 mIoU = 0.0001 Time 170.04
+2020-05-26 20:35:08,313 INFO Epoch 6
+2020-05-26 20:35:08,313 INFO Training
+2020-05-26 20:39:45,744 INFO batch time: 0.59 total time: 277.43
+2020-05-26 20:39:45,745 INFO Validating Epoch 6
+2020-05-26 20:42:35,899 INFO Epoch 6 Avg loss = 0.1598 mIoU = 0.0002 Time 170.15
+2020-05-26 20:42:36,692 INFO Epoch 7
+2020-05-26 20:42:36,692 INFO Training
+2020-05-26 20:47:13,766 INFO batch time: 0.58 total time: 277.07
+2020-05-26 20:47:13,767 INFO Validating Epoch 7
+2020-05-26 20:50:03,737 INFO Epoch 7 Avg loss = 0.1558 mIoU = 0.0001 Time 169.97
+2020-05-26 20:50:03,738 INFO Epoch 8
+2020-05-26 20:50:03,738 INFO Training
+2020-05-26 20:55:08,989 INFO batch time: 0.64 total time: 305.25
+2020-05-26 20:55:08,990 INFO Validating Epoch 8
+2020-05-26 20:57:59,422 INFO Epoch 8 Avg loss = 0.1574 mIoU = 0.0001 Time 170.43
+2020-05-26 20:57:59,424 INFO Epoch 9
+2020-05-26 20:57:59,424 INFO Training
+2020-05-26 21:02:36,727 INFO batch time: 0.58 total time: 277.30
+2020-05-26 21:02:36,728 INFO Validating Epoch 9
+2020-05-26 21:05:27,442 INFO Epoch 9 Avg loss = 0.1545 mIoU = 0.0001 Time 170.71
+2020-05-26 21:05:27,443 INFO Epoch 10
+2020-05-26 21:05:27,443 INFO Training
+2020-05-26 21:10:03,918 INFO batch time: 0.58 total time: 276.47
+2020-05-26 21:10:03,918 INFO Validating Epoch 10
+2020-05-26 21:12:54,147 INFO Epoch 10 Avg loss = 0.1521 mIoU = 0.0001 Time 170.23
+2020-05-26 21:12:54,148 INFO Epoch 11
+2020-05-26 21:12:54,148 INFO Training
+2020-05-26 21:17:31,628 INFO batch time: 0.59 total time: 277.48
+2020-05-26 21:17:31,629 INFO Validating Epoch 11
+2020-05-26 21:20:21,706 INFO Epoch 11 Avg loss = 0.1491 mIoU = 0.0001 Time 170.08
+2020-05-26 21:20:21,707 INFO Epoch 12
+2020-05-26 21:20:21,707 INFO Training
+2020-05-26 21:24:58,433 INFO batch time: 0.58 total time: 276.73
+2020-05-26 21:24:58,434 INFO Validating Epoch 12
+2020-05-26 21:27:48,855 INFO Epoch 12 Avg loss = 0.1499 mIoU = 0.0001 Time 170.42
+2020-05-26 21:27:48,856 INFO Epoch 13
+2020-05-26 21:27:48,856 INFO Training
+2020-05-26 21:32:26,304 INFO batch time: 0.59 total time: 277.45
+2020-05-26 21:32:26,305 INFO Validating Epoch 13
+2020-05-26 21:35:16,423 INFO Epoch 13 Avg loss = 0.1472 mIoU = 0.0001 Time 170.12
+2020-05-26 21:35:16,424 INFO Epoch 14
+2020-05-26 21:35:16,424 INFO Training
+2020-05-26 21:39:53,228 INFO batch time: 0.58 total time: 276.80
+2020-05-26 21:39:53,229 INFO Validating Epoch 14
+2020-05-26 21:42:43,239 INFO Epoch 14 Avg loss = 0.1514 mIoU = 0.0002 Time 170.01
+2020-05-26 21:42:43,240 INFO Epoch 15
+2020-05-26 21:42:43,240 INFO Training
+2020-05-26 21:47:19,863 INFO batch time: 0.58 total time: 276.62
+2020-05-26 21:47:19,864 INFO Validating Epoch 15
+2020-05-26 21:50:10,037 INFO Epoch 15 Avg loss = 0.1494 mIoU = 0.0002 Time 170.17
+2020-05-26 21:50:10,038 INFO Epoch 16
+2020-05-26 21:50:10,038 INFO Training
+2020-05-26 21:54:47,227 INFO batch time: 0.58 total time: 277.19
+2020-05-26 21:54:47,228 INFO Validating Epoch 16
+2020-05-26 21:57:37,080 INFO Epoch 16 Avg loss = 0.1458 mIoU = 0.0001 Time 169.85
+2020-05-26 21:57:37,081 INFO Epoch 17
+2020-05-26 21:57:37,081 INFO Training
+2020-05-26 22:02:14,290 INFO batch time: 0.58 total time: 277.21
+2020-05-26 22:02:14,291 INFO Validating Epoch 17
+2020-05-26 22:05:04,602 INFO Epoch 17 Avg loss = 0.1467 mIoU = 0.0002 Time 170.31
+2020-05-26 22:05:04,604 INFO Epoch 18
+2020-05-26 22:05:04,604 INFO Training
+2020-05-26 22:09:42,051 INFO batch time: 0.59 total time: 277.45
+2020-05-26 22:09:42,052 INFO Validating Epoch 18
+2020-05-26 22:12:32,229 INFO Epoch 18 Avg loss = 0.1465 mIoU = 0.0001 Time 170.18
+2020-05-26 22:12:32,229 INFO Epoch 19
+2020-05-26 22:12:32,230 INFO Training
+2020-05-26 22:17:09,563 INFO batch time: 0.58 total time: 277.33
+2020-05-26 22:17:09,564 INFO Validating Epoch 19
+2020-05-26 22:19:59,863 INFO Epoch 19 Avg loss = 0.1453 mIoU = 0.0001 Time 170.30
+2020-05-26 22:19:59,865 INFO Epoch 20
+2020-05-26 22:19:59,865 INFO Training
+2020-05-26 22:24:37,873 INFO batch time: 0.59 total time: 278.01
+2020-05-26 22:24:37,874 INFO Validating Epoch 20
+2020-05-26 22:27:27,843 INFO Epoch 20 Avg loss = 0.1451 mIoU = 0.0001 Time 169.97
+2020-05-26 22:27:27,844 INFO Epoch 21
+2020-05-26 22:27:27,844 INFO Training
+2020-05-26 22:32:04,749 INFO batch time: 0.58 total time: 276.90
+2020-05-26 22:32:04,750 INFO Validating Epoch 21
+2020-05-26 22:34:55,136 INFO Epoch 21 Avg loss = 0.1447 mIoU = 0.0002 Time 170.39
+2020-05-26 22:34:55,930 INFO Epoch 22
+2020-05-26 22:34:55,930 INFO Training
+2020-05-26 22:39:33,072 INFO batch time: 0.58 total time: 277.14
+2020-05-26 22:39:33,073 INFO Validating Epoch 22
+2020-05-26 22:42:23,020 INFO Epoch 22 Avg loss = 0.1446 mIoU = 0.0002 Time 169.95
+2020-05-26 22:42:23,799 INFO Epoch 23
+2020-05-26 22:42:23,799 INFO Training
+2020-05-26 22:47:01,436 INFO batch time: 0.59 total time: 277.64
+2020-05-26 22:47:01,437 INFO Validating Epoch 23
+2020-05-26 22:49:51,782 INFO Epoch 23 Avg loss = 0.1486 mIoU = 0.0004 Time 170.34
+2020-05-26 22:49:52,569 INFO Epoch 24
+2020-05-26 22:49:52,569 INFO Training
+2020-05-26 22:54:29,169 INFO batch time: 0.58 total time: 276.60
+2020-05-26 22:54:29,170 INFO Validating Epoch 24
+2020-05-26 22:57:19,695 INFO Epoch 24 Avg loss = 0.1435 mIoU = 0.0002 Time 170.52
+2020-05-26 22:57:19,696 INFO Epoch 25
+2020-05-26 22:57:19,696 INFO Training
+2020-05-26 23:01:56,097 INFO batch time: 0.58 total time: 276.40
+2020-05-26 23:01:56,098 INFO Validating Epoch 25
+2020-05-26 23:04:46,333 INFO Epoch 25 Avg loss = 0.1446 mIoU = 0.0003 Time 170.23
+2020-05-26 23:04:46,334 INFO Epoch 26
+2020-05-26 23:04:46,334 INFO Training
+2020-05-26 23:09:23,149 INFO batch time: 0.58 total time: 276.81
+2020-05-26 23:09:23,150 INFO Validating Epoch 26
+2020-05-26 23:12:14,923 INFO Epoch 26 Avg loss = 0.1434 mIoU = 0.0002 Time 171.77
+2020-05-26 23:12:14,924 INFO Epoch 27
+2020-05-26 23:12:14,924 INFO Training
+2020-05-26 23:16:53,401 INFO batch time: 0.59 total time: 278.48
+2020-05-26 23:16:53,402 INFO Validating Epoch 27
+2020-05-26 23:19:43,320 INFO Epoch 27 Avg loss = 0.1453 mIoU = 0.0003 Time 169.92
+2020-05-26 23:19:43,321 INFO Epoch 28
+2020-05-26 23:19:43,321 INFO Training
+2020-05-26 23:24:33,762 INFO batch time: 0.61 total time: 290.44
+2020-05-26 23:24:33,763 INFO Validating Epoch 28
+2020-05-26 23:27:23,888 INFO Epoch 28 Avg loss = 0.1468 mIoU = 0.0004 Time 170.12
+2020-05-26 23:27:24,645 INFO Epoch 29
+2020-05-26 23:27:24,645 INFO Training
+2020-05-26 23:32:04,643 INFO batch time: 0.59 total time: 280.00
+2020-05-26 23:32:04,644 INFO Validating Epoch 29
+2020-05-26 23:34:54,820 INFO Epoch 29 Avg loss = 0.1423 mIoU = 0.0002 Time 170.18
+2020-05-26 23:34:54,821 INFO Epoch 30
+2020-05-26 23:34:54,821 INFO Training
+2020-05-26 23:39:35,064 INFO batch time: 0.59 total time: 280.24
+2020-05-26 23:39:35,065 INFO Validating Epoch 30
+2020-05-26 23:42:27,509 INFO Epoch 30 Avg loss = 0.1458 mIoU = 0.0004 Time 172.44
+2020-05-26 23:42:28,407 INFO Epoch 31
+2020-05-26 23:42:28,407 INFO Training
+2020-05-26 23:47:13,292 INFO batch time: 0.60 total time: 284.88
+2020-05-26 23:47:13,293 INFO Validating Epoch 31
+2020-05-26 23:50:03,850 INFO Epoch 31 Avg loss = 0.1436 mIoU = 0.0003 Time 170.56
+2020-05-26 23:50:03,851 INFO Epoch 32
+2020-05-26 23:50:03,851 INFO Training
+2020-05-26 23:54:53,048 INFO batch time: 0.61 total time: 289.20
+2020-05-26 23:54:53,049 INFO Validating Epoch 32
+2020-05-26 23:57:44,544 INFO Epoch 32 Avg loss = 0.1420 mIoU = 0.0003 Time 171.49
+2020-05-26 23:57:44,550 INFO Epoch 33
+2020-05-26 23:57:44,550 INFO Training
+2020-05-27 00:02:33,500 INFO batch time: 0.61 total time: 288.95
+2020-05-27 00:02:33,501 INFO Validating Epoch 33
+2020-05-27 00:05:24,323 INFO Epoch 33 Avg loss = 0.1427 mIoU = 0.0004 Time 170.82
+2020-05-27 00:05:24,324 INFO Epoch 34
+2020-05-27 00:05:24,324 INFO Training
+2020-05-27 00:10:08,636 INFO batch time: 0.60 total time: 284.31
+2020-05-27 00:10:08,637 INFO Validating Epoch 34
+2020-05-27 00:12:59,297 INFO Epoch 34 Avg loss = 0.1408 mIoU = 0.0003 Time 170.66
+2020-05-27 00:12:59,298 INFO Epoch 35
+2020-05-27 00:12:59,298 INFO Training
+2020-05-27 00:17:39,001 INFO batch time: 0.59 total time: 279.70
+2020-05-27 00:17:39,002 INFO Validating Epoch 35
+2020-05-27 00:20:29,455 INFO Epoch 35 Avg loss = 0.1406 mIoU = 0.0002 Time 170.45
+2020-05-27 00:20:29,456 INFO Epoch 36
+2020-05-27 00:20:29,456 INFO Training
+2020-05-27 00:25:09,017 INFO batch time: 0.59 total time: 279.56
+2020-05-27 00:25:09,018 INFO Validating Epoch 36
+2020-05-27 00:27:59,418 INFO Epoch 36 Avg loss = 0.1457 mIoU = 0.0009 Time 170.40
+2020-05-27 00:28:00,307 INFO Epoch 37
+2020-05-27 00:28:00,308 INFO Training

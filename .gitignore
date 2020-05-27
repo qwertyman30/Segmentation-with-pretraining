@@ -11,6 +11,5 @@ __pycache__
 */*/__pycache__/
 seg_data
 */__pycache__/
-*.jpg
 *.out
-*.png
+*.pth
